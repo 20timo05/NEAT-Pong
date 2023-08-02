@@ -1,11 +1,11 @@
 import random
 import pygame
 
-from game import SCREEN_HEIGHT, SCREEN_WIDTH
-
-
 class Ball():
-    def __init__(self):
+    def __init__(self, SCREEN_HEIGHT, SCREEN_WIDTH):
+        self.SCREEN_HEIGHT = SCREEN_HEIGHT
+        self.SCREEN_WIDTH = SCREEN_WIDTH
+
         self.width = 10
         self.height = 10
 
@@ -22,15 +22,12 @@ class Ball():
         self.x += self.xVel
         self.y += self.yVel
 
-        if self.x < 0: return -1
-        elif self.x + self.width > SCREEN_WIDTH: return 1
+        if self.x < 0: return ("score", True)
+        elif self.x + self.width > self.SCREEN_WIDTH: return ("score", False)
 
         for paddle in [paddle1, paddle2]:
             # check collision with paddle
-            if not (self.x + self.width < paddle.x or
-                    self.y + self.height < paddle.y or
-                    self.x > paddle.x + paddle.width or
-                    self.y > paddle.y + paddle.height):
+            if self.__checkCollision(paddle):
                 self.xVel = -self.xVel
 
                 # adjust yVel based on where paddle hit ball
@@ -45,19 +42,33 @@ class Ball():
                 perc = norm_y / norm_ymax
 
                 self.yVel = (perc - 0.5) * 8
+                if abs(self.yVel) < 0.5:
+                    self.yVel = 0.5 if self.yVel >= 0 else -0.5
 
                 # each collision with paddle, xVel increases a little
                 self.xVel = self.xVel + 0.1 if self.xVel > 0 else self.xVel - 0.1
                 # ensure that it does not exceed max velocity of 8
                 self.xVel = max(min(self.xVel, 8), -8)
 
-        if self.y < 0 or self.y + self.height > SCREEN_HEIGHT:
+                # move ball outside of paddle so that it can freely move again
+                while self.__checkCollision(paddle):
+                    self.x += self.xVel
+
+                return ("hit", paddle == paddle1)
+
+        if self.y < 0 or self.y + self.height > self.SCREEN_HEIGHT:
             self.yVel = -self.yVel
 
-        return 0
+        return ("nothing", True)
 
     def resetPosition(self):
         self.xVel = random.choice([-4, 4])
-        self.yVel = random.random() * 4 - 2
-        self.x = (SCREEN_WIDTH - self.width) / 2
-        self.y = (SCREEN_HEIGHT - self.height) / 2
+        self.yVel = random.choice([random.uniform(1, 5), random.uniform(-5, -1)])
+        self.x = (self.SCREEN_WIDTH - self.width) / 2
+        self.y = (self.SCREEN_HEIGHT - self.height) / 2
+
+    def __checkCollision(self, paddle):
+        return not (self.x + self.width < paddle.x or
+                    self.y + self.height < paddle.y or
+                    self.x > paddle.x + paddle.width or
+                    self.y > paddle.y + paddle.height)

@@ -1,10 +1,11 @@
 import pygame
 
-from game import SCREEN_HEIGHT, SCREEN_WIDTH
-
 
 class ScoreDisplay():
-    def __init__(self, defScore1, defScore2):
+    def __init__(self, defScore1, defScore2, SCREEN_HEIGHT, SCREEN_WIDTH):
+        self.SCREEN_HEIGHT = SCREEN_HEIGHT
+        self.SCREEN_WIDTH = SCREEN_WIDTH
+
         self.score1 = defScore1
         self.score2 = defScore2
 
@@ -16,20 +17,20 @@ class ScoreDisplay():
 
     def draw(self, screen):
         textScore1 = self.font.render(str(self.score1), True, (255, 255, 255))
-        textScore1Rect = textScore1.get_rect(center=(SCREEN_WIDTH / 4, 50))
+        textScore1Rect = textScore1.get_rect(center=(self.SCREEN_WIDTH / 4, 50))
         screen.blit(textScore1, textScore1Rect)
 
         textScore2 = self.font.render(str(self.score2), True, (255, 255, 255))
-        textScore2Rect = textScore1.get_rect(center=(3 * SCREEN_WIDTH / 4, 50))
+        textScore2Rect = textScore1.get_rect(center=(3 * self.SCREEN_WIDTH / 4, 50))
         screen.blit(textScore2, textScore2Rect)
 
         # draw middle line
-        middleLineSegmentHeight = SCREEN_HEIGHT / \
+        middleLineSegmentHeight = self.SCREEN_HEIGHT / \
             (2 * self.dashedMiddleLineSegments - 1)
         
         for i in range(self.dashedMiddleLineSegments):
             rect = pygame.Rect((
-                (SCREEN_WIDTH - self.dashedMiddleLineWidth) / 2,
+                (self.SCREEN_WIDTH - self.dashedMiddleLineWidth) / 2,
                 2 * i * middleLineSegmentHeight,
                 self.dashedMiddleLineWidth,
                 middleLineSegmentHeight

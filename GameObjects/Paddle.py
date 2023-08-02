@@ -1,14 +1,15 @@
 import pygame
 
-from game import SCREEN_HEIGHT, SCREEN_WIDTH
-
 
 class Paddle():
-    def __init__(self, isLeft):
+    def __init__(self, isLeft, SCREEN_HEIGHT, SCREEN_WIDTH):
+        self.SCREEN_HEIGHT = SCREEN_HEIGHT
+        self.SCREEN_WIDTH = SCREEN_WIDTH
+
         self.width = 10
         self.height = 150
 
-        self.x = 30 if isLeft else SCREEN_WIDTH - self.width - 30
+        self.x = 0 if isLeft else self.SCREEN_WIDTH - self.width
         self.resetPosition()
 
         self.color = (255, 255, 255)
@@ -23,8 +24,8 @@ class Paddle():
         self.y += dir * self.speed
         if self.y < 0:
             self.y = 0
-        elif self.y + self.height > SCREEN_HEIGHT:
-            self.y = SCREEN_HEIGHT - self.height
+        elif self.y + self.height > self.SCREEN_HEIGHT:
+            self.y = self.SCREEN_HEIGHT - self.height
     
     def resetPosition(self):
-        self.y = (SCREEN_HEIGHT - self.height) / 2
+        self.y = (self.SCREEN_HEIGHT - self.height) / 2
