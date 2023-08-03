@@ -35,6 +35,7 @@ class Plotter():
         pygame.init()
         screen = pygame.display.set_mode(
             (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        pygame.display.set_caption("Neural Network Visualizer")
 
         pygame.font.init()
         my_font = pygame.font.SysFont('Comic Sans MS', 20)

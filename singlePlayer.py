@@ -18,4 +18,4 @@ def load_neural_network(file_path):
     
 if __name__ == "__main__":
     nn = load_neural_network("PONG_NN.pkl")
-    startGame(opponentGenome = nn)
+    startGame(opponentGenome = nn, showOpponentInput = True)

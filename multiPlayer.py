@@ -7,20 +7,21 @@ from GameObjects.ScoreDisplay import ScoreDisplay
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-def startGame(opponentGenome = None):
+def startGame(opponentGenome = None, showOpponentInput = False):
     print("##############################")
     print("press ENTER to start the game!")
     print("##############################")
     
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("PONG against NEAT-AI!!!" if opponentGenome != None else "PONG Mulitplayer Mode")
 
     game_loop_running = True
     game_running = False
     clock = pygame.time.Clock()
 
-    paddle1 = Paddle(True, SCREEN_HEIGHT, SCREEN_WIDTH)
-    paddle2 = Paddle(False, SCREEN_HEIGHT, SCREEN_WIDTH)
+    paddle1 = Paddle(True, SCREEN_HEIGHT, SCREEN_WIDTH, showInput=False)
+    paddle2 = Paddle(False, SCREEN_HEIGHT, SCREEN_WIDTH, showInput=opponentGenome != None)
     ball = Ball(SCREEN_HEIGHT, SCREEN_WIDTH)
     scoreDisplay = ScoreDisplay(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH)
 
@@ -33,17 +34,21 @@ def startGame(opponentGenome = None):
         
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE] and not game_running: game_running = True
-
+        screen.fill((0, 0, 0))
+        
         paddle1.move(keys[pygame.K_s] - keys[pygame.K_w])
         if opponentGenome == None:
             paddle2.move(keys[pygame.K_DOWN] - keys[pygame.K_UP])
-        else:
-            output = opponentGenome.calculate([paddle2.y, ball.y, abs(paddle2.x - ball.x)])
+        elif game_running:
+            input = [paddle2.y, ball.y, abs(paddle2.x - ball.x)]
+            output = opponentGenome.calculate(input)
             action = output.index(max(output))
-            if action == 1: paddle2.move(-1)
-            elif action == 2: paddle2.move(1)
 
-        screen.fill((0, 0, 0))
+            actionDict = {0: 0, 1: -1, 2: 1}
+            paddle2.move(actionDict[action])
+
+            if showOpponentInput: paddle2.displayInput(screen, input)
+
         paddle1.draw(screen)
         paddle2.draw(screen)
 
