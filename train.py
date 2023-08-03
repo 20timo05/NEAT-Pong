@@ -4,12 +4,12 @@ from PongGameWrapper import PongGameWrapper
 from multiPlayer import startGame
 
 def trainAI():
-    neat = Neat(3, 3, 100)
+    neat = Neat(3, 3, 50)
     SHOW_GAME = False
 
     trained_opponent = None
 
-    for generation in range(100):
+    for generation in range(50):
       if generation > 40 and SHOW_GAME == False: SHOW_GAME = True
       # evaluate genomes
       # let all clients play against all other clients to calcalute a fair fitness score
@@ -30,6 +30,8 @@ def trainAI():
       neat.evolve()
       neat.print_information()
       print(f"GENERATION {generation + 1}")
+
+      if trained_opponent != None: break
 
     if trained_opponent == None:
       trained_opponent = max(neat.clients, key=lambda c: c.score)

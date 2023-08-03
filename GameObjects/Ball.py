@@ -50,14 +50,17 @@ class Ball():
                 # ensure that it does not exceed max velocity of 8
                 self.xVel = max(min(self.xVel, 8), -8)
 
-                # move ball outside of paddle so that it can freely move again
-                while self.__checkCollision(paddle):
-                    self.x += self.xVel
+                # move ball so that it can freely move again
+                while self.__checkCollision(paddle): self.x += self.xVel
 
                 return ("hit", paddle == paddle1)
 
         if self.y < 0 or self.y + self.height > self.SCREEN_HEIGHT:
             self.yVel = -self.yVel
+        
+        # move ball so that it can freely move again
+        while self.y < 0 or self.y + self.height > self.SCREEN_HEIGHT:
+            self.y += self.yVel
 
         return ("nothing", True)
 
